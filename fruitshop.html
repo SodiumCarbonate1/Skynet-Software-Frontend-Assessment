@@ -10,15 +10,18 @@
 </head>
 <body>
     <h1 class="title">Skeynet Software - Frontend Evaluation</h1>
-    <div class="input_bar">
-      <label>Filter Bar: </label><input type="text" id="filterbar" placeholder="enter the fruits that you don't what to see"/>
+    <div class="input_bar">   
+      <label>Filter Bar: </label><input type="text" id="filterbar" placeholder="enter the fruits that you don't what to see"/><br/>
+    </div>
+    <div class="checkbox">
+      Filter Checkbox: 
     </div>
     <div class="estimate_input_bar">
       <label>Choose your fruit: </label>
       <select name="fruits" id="fruit_selection">
         <option value="" selected></option>
       </select>
-      <label>Enter your fruit Estimate: </label><input type="text" id="searchbar_estimate" placeholder=""/>
+      <label>Enter your fruit Estimate and press enter: </label><input type="text" id="searchbar_estimate" placeholder=""/>
     </div>
     <div class="estimation_result">
       <p class="result_estimate"></p>
@@ -28,13 +31,13 @@
         <table class="table table-vf">
             <thead>
               <tr class="title-row vf">
-                <th scope="col" class="fruit-col fruit_name">Fruit</th>
-                <th scope="col" class="price-col price">Price</th>
-                <th scope="col" class="date-col last_updated">Last Updated</th>
-                <th scope="col" class="inventory-col inventory_count">Inventory Count</th>
+                <th scope="col" class="fruit-col fruit_name">Fruit<img src="img/arrow.png" width="15" height="15"/></th>
+                <th scope="col" class="price-col price">Price<img src="img/arrow.png" width="15" height="15"/></th>
+                <th scope="col" class="date-col last_updated">Last Updated<img src="img/arrow.png" width="15" height="15"/></th>
+                <th scope="col" class="inventory-col inventory_count">Inventory Count<img src="img/arrow.png" width="15" height="15"/></th>
               </tr>
             </thead>
-            <tbody class="VasaniFresh">
+            <tbody class="Vasani Fresh">
             </tbody>
           </table>
 
@@ -42,13 +45,13 @@
           <table class="table table-zf">
             <thead>
               <tr class="title-row zf">
-                <th scope="col" class="fruit-col fruit_name">Fruit</th>
-                <th scope="col" class="price-col price">Price</th>
-                <th scope="col" class="date-col last_updated">Last Updated</th>
-                <th scope="col" class="inventory-col inventory_count">Inventory Count</th>
+                <th scope="col" class="fruit-col fruit_name">Fruit<img src="img/arrow.png" width="15" height="15"/></th>
+                <th scope="col" class="price-col price">Price<img src="img/arrow.png" width="15" height="15"/></th>
+                <th scope="col" class="date-col last_updated">Last Updated<img src="img/arrow.png" width="15" height="15"/></th>
+                <th scope="col" class="inventory-col inventory_count">Inventory Count<img src="img/arrow.png" width="15" height="15"/></th>
               </tr>
             </thead>
-            <tbody class="ZeniFruits">
+            <tbody class="Zeni Fruits">
             </tbody>
           </table>
     </div>

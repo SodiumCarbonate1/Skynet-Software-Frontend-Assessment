@@ -7,8 +7,9 @@ window.onload = function(){
         let map = new Map();
         let bucket = [];
         let result = [];
-        let fruit_list = [];
-        let unique_fruit = [];
+        let fruit_list = []; // fruit list duplicated version
+        let unique_fruit = []; // unique fruit list
+        let fruit_array = []; // single fruit list
         let desc_asc = false;
         function insertingData(tableData){
             // creating row and cells for both table
@@ -105,6 +106,54 @@ window.onload = function(){
         }
         // filter search bar that will delete unwanted items
         function filterfunc(){
+
+            //find out the array of fruits
+            for(let i = 0; i < data.length; i++){
+                if( !fruit_array.includes(data[i].fruit_name)){
+                    fruit_array.push(data[i].fruit_name)
+                }
+            }
+
+            // apending them to multiple checkbox list
+            for(let i = 0; i < fruit_array.length; i++){
+                let fruit = fruit_array[i];
+                if(fruit == 'Dragon Fruit'){
+                    fruit = 'Dragon';
+                }
+                document.querySelector('.checkbox').innerHTML += `<input type="checkbox" class="multiple_section" id="${fruit.toLowerCase()}" name="${fruit.toLowerCase()}" value="${fruit.toLowerCase()}">
+                <label for="${fruit.toLowerCase()}"> ${fruit}</label><br>`;
+            }
+
+
+
+
+            //second version of filterbar, so you can hide multiple at the same time.
+            document.querySelectorAll('.multiple_section').forEach((ele)=>{
+                ele.addEventListener('click',function(){
+
+                    document.querySelectorAll('.table-row').forEach((item)=>{
+                        if(ele.checked){
+                            if(item.classList.contains(ele.id)){
+                                item.classList.toggle('active');
+                            }
+                                
+                            }
+                        else if(!ele.checked){
+                            if(item.classList.contains('active')){
+                                item.classList.toggle('active');
+                            }
+                        }
+                    })
+                })
+            })
+            
+
+            
+
+
+            
+
+            
             //getting value from search bar and changing all characters to lower case just in case
             let input_result = document.querySelector('#filterbar');
             input_result.addEventListener('keyup',()=>{
@@ -131,12 +180,7 @@ window.onload = function(){
 
             let totalnum = {};
             //getting all the fruit type
-            let fruit_array = [];
-            for(let i = 0; i < data.length; i++){
-                if( !fruit_array.includes(data[i].fruit_name)){
-                    fruit_array.push(data[i].fruit_name)
-                }
-            }
+
 
             document.querySelectorAll('.table-row').forEach((ele)=>{
                 let inven_count = Number(ele.querySelector('td:last-child p').innerHTML);
@@ -156,7 +200,7 @@ window.onload = function(){
             // append them all into selection tag
             fruit_array = fruit_array.reverse();
             for(let j = 0; j < fruit_array.length; j++){
-                let option = `<option value=${fruit_array[j].toLowerCase()}>${fruit_array[j].toLowerCase()}</option>`
+                let option = `<option value=${fruit_array[j].toLowerCase()}>${fruit_array[j]}</option>`
                 document.querySelector('#fruit_selection').insertAdjacentHTML('afterbegin',option);
             }
 
@@ -169,63 +213,58 @@ window.onload = function(){
             let first_result = 0;
             input_result.addEventListener('keyup',()=>{
 
-                
-
-
                 document.querySelectorAll('.table-row').forEach((ele)=>{
 
-                    if(input_result.value !== '' && selection_value.value !== '' && input_result.value > 0){
-
+                    if(input_result.value !== '' && selection_value.value !== '' && input_result.value >= 0){
                         //check if total inventory is greater than input#
                         if(totalnum[selection_value.value] < input_result.value){
-
-                            document.querySelector('.estimation_result .result_estimate').innerHTML = `Exceed maximum number from both stores`;
+                            document.querySelector('.estimation_result .result_estimate').innerHTML = `Exceed maximum inventory`;
                         }
                         else{
                             //unique fruit part
                             //checking if fruit is unique, if it is compare the number and display result(dont have to check another store)
-                            if(unique_fruit.includes(selection_value.value)){
+                            if(unique_fruit.includes(selection_value.value) && ele.classList.contains(selection_value.value)){
                                 if(Number(ele.querySelector('td:last-child p').innerHTML) >= Number(input_result.value)){
-                                    document.querySelector('.estimation_result .result_estimate').innerHTML = `You should buy All ${input_result.value}  ${selection_value.value} from ${ele.parentNode.classList[0]}`;
+                                    document.querySelector('.estimation_result .result_estimate').innerHTML = `You should buy All ${input_result.value}  ${selection_value.value} from ${ele.parentNode.classList[0]} ${ele.parentNode.classList[1]}`;
                                 }
-                                else if(Number(ele.querySelector('td:last-child p').innerHTML) < Number(input_result.value)){
-                                    document.querySelector('.estimation_result .result_estimate').innerHTML = `Exceed maximum number`;;
+                                else{
+                                    document.querySelector('.estimation_result .result_estimate').innerHTML = `Exceed maximum inventory`;;
                                 }
                             }
 
 
                             //common fruit part
-
                             // there are two parts when cheapest store can cover all input#, then display string. 
-                            else{
-                                if(ele.classList.contains('cheapest') && ele.classList.contains(selection_value.value) ){
+                            else if((!unique_fruit.includes(selection_value.value) && ele.classList.contains(selection_value.value))){
+                                if(ele.classList.contains('cheapest')){
                                     if(Number(ele.querySelector('td:last-child p').innerHTML) >= Number(input_result.value)){
-                                        document.querySelector('.estimation_result .result_estimate').innerHTML = `You should buy All ${input_result.value}  ${selection_value.value} from ${ele.parentNode.classList[0]}`;
+                                        console.log('test1')
+                                        document.querySelector('.estimation_result .result_estimate').innerHTML = `You should buy All ${input_result.value}  ${selection_value.value} from from ${ele.parentNode.classList[0]} ${ele.parentNode.classList[1]}`;
                                     }
         
                                     // but if its otherwise, do calculation first and store the number and string to variable first.
-                                    else if(Number(ele.querySelector('td:last-child p').innerHTML) < Number(input_result.value)){
-                                        first_half =`You should first buy All ${Number(ele.querySelector('td:last-child p').innerHTML)}  ${selection_value.value} from ${ele.parentNode.classList[0]}, then `;
+                                    else{
+                                        first_half =`You should first buy All ${Number(ele.querySelector('td:last-child p').innerHTML)}  ${selection_value.value} from from ${ele.parentNode.classList[0]} ${ele.parentNode.classList[1]} then `;
                                         first_result = Number(input_result.value) - Number(ele.querySelector('td:last-child p').innerHTML);
 
                                     }
                                 }
-                                else if(!ele.classList.contains('cheapest') && ele.classList.contains(selection_value.value)){
-                                    document.querySelector('.estimation_result .result_estimate').innerHTML = `${first_half}, You should buy the rest ${first_result} from ${ele.parentNode.classList[0]}`;
+                                else if(!ele.classList.contains('cheapest') && first_result !== 0){
+                                    document.querySelector('.estimation_result .result_estimate').innerHTML = `${first_half}, You should buy the rest ${first_result} from from ${ele.parentNode.classList[0]} ${ele.parentNode.classList[1]}`;
                                 }
                             }
-                        }
+                        }   
     
                     
     
     
                     }
     
-                    else if(input_result.value < 0){
-                        document.querySelector('.estimation_result .result_estimate').innerHTML = `Invalid Number`;
+                    else if(input_result.value < 0 || input_result.value.match(/^[A-Za-z]+$/)){ 
+                        document.querySelector('.estimation_result .result_estimate').innerHTML = `Invalid String`;
                     }
                     else if(input_result.value =='' || selection_value.value ==''){
-                        result = 0;
+                        first_result = 0;
                         document.querySelector('.estimation_result .result_estimate').innerHTML = '';
                     }                
                 })
@@ -251,22 +290,46 @@ window.onload = function(){
         }
         }
         function sortingfunc(){
+            
             document.querySelectorAll('.title-row th').forEach((ele)=>{
+                //adding click on eventhandler to each table title
                 ele.addEventListener('click',function(){
+
+                    //remove all arrow sign at the beginning
+                    document.querySelectorAll('.title-row th').forEach((ele)=>{ele.setAttribute('value','')})
+
+                    // json name
                     let jsoname = ele.classList[1];
+                    // check the type of the title from data;
                     let typeChecker = typeof data[0][jsoname];
+                    // descending and ascending checker
                     desc_asc = !desc_asc;
 
+
+
+                    // table 1
                     if(ele.parentNode.classList[1] == 'vf'){
                         document.querySelector('.table-vf tbody').innerHTML = '';
                         displayTable1(stringNumberSort(desc_asc,jsoname,typeChecker));
-
+                        if(desc_asc){
+                            ele.setAttribute('value','asc');
+                        }
+                        else{
+                            ele.setAttribute('value','desc');
+                        }
                     }
-
+                    // table 2
                     else{
                         document.querySelector('.table-zf tbody').innerHTML = '';
                         displayTable2(stringNumberSort(desc_asc,jsoname,typeChecker));
+                        if(desc_asc){
+                            ele.setAttribute('value','asc');
+                        }
+                        else{
+                            ele.setAttribute('value','desc');
+                        }
                     }
+                    //redo the two functions
                     findCheapestPrice();
                     displayHiddenPic();
                     
