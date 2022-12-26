@@ -211,14 +211,16 @@ window.onload = function(){
 
             let first_half = '';
             let first_result = 0;
+            let total_price = 0;
+            let temp_price = 0;
             input_result.addEventListener('keyup',()=>{
-
                 document.querySelectorAll('.table-row').forEach((ele)=>{
 
                     if(input_result.value !== '' && selection_value.value !== '' && input_result.value >= 0){
                         //check if total inventory is greater than input#
                         if(totalnum[selection_value.value] < input_result.value){
                             document.querySelector('.estimation_result .result_estimate').innerHTML = `Exceed maximum inventory`;
+                            document.querySelector('.total_price').innerHTML = '';
                         }
                         else{
                             //unique fruit part
@@ -226,9 +228,12 @@ window.onload = function(){
                             if(unique_fruit.includes(selection_value.value) && ele.classList.contains(selection_value.value)){
                                 if(Number(ele.querySelector('td:last-child p').innerHTML) >= Number(input_result.value)){
                                     document.querySelector('.estimation_result .result_estimate').innerHTML = `You should buy All ${input_result.value}  ${selection_value.value} from ${ele.parentNode.classList[0]} ${ele.parentNode.classList[1]}`;
+                                    total_price = (Number(ele.querySelector('.price .fruit_p').innerHTML) * Number(input_result.value)).toFixed(2);
+                                    document.querySelector('.total_price').innerHTML = `Total cost is $${total_price}`;
                                 }
                                 else{
-                                    document.querySelector('.estimation_result .result_estimate').innerHTML = `Exceed maximum inventory`;;
+                                    document.querySelector('.estimation_result .result_estimate').innerHTML = `Exceed maximum inventory`;
+                                    document.querySelector('.total_price').innerHTML = '';
                                 }
                             }
 
@@ -237,9 +242,10 @@ window.onload = function(){
                             // there are two parts when cheapest store can cover all input#, then display string. 
                             else if((!unique_fruit.includes(selection_value.value) && ele.classList.contains(selection_value.value))){
                                 if(ele.classList.contains('cheapest')){
-                                    if(Number(ele.querySelector('td:last-child p').innerHTML) >= Number(input_result.value)){
-                                        console.log('test1')
+                                    if(Number(ele.querySelector('td:last-child p').innerHTML) >= Number(input_result.value)){         
                                         document.querySelector('.estimation_result .result_estimate').innerHTML = `You should buy All ${input_result.value}  ${selection_value.value} from from ${ele.parentNode.classList[0]} ${ele.parentNode.classList[1]}`;
+                                        total_price = (Number(ele.querySelector('.price .fruit_p').innerHTML) * Number(input_result.value)).toFixed(2);
+                                        document.querySelector('.total_price').innerHTML = `Total cost is $${total_price}`;
                                     }
         
                                     // but if its otherwise, do calculation first and store the number and string to variable first.
@@ -247,10 +253,16 @@ window.onload = function(){
                                         first_half =`You should first buy All ${Number(ele.querySelector('td:last-child p').innerHTML)}  ${selection_value.value} from from ${ele.parentNode.classList[0]} ${ele.parentNode.classList[1]} then `;
                                         first_result = Number(input_result.value) - Number(ele.querySelector('td:last-child p').innerHTML);
 
+                                        temp_price = (Number(ele.querySelector('.price .fruit_p').innerHTML) * Number(ele.querySelector('.inventory_count .fruit_p').innerHTML));
+                                        
+
                                     }
                                 }
                                 else if(!ele.classList.contains('cheapest') && first_result !== 0){
-                                    document.querySelector('.estimation_result .result_estimate').innerHTML = `${first_half}, You should buy the rest ${first_result} from from ${ele.parentNode.classList[0]} ${ele.parentNode.classList[1]}`;
+
+                                    total_price = (temp_price + Number(ele.querySelector('.price .fruit_p').innerHTML) * first_result).toFixed(2);
+                                    document.querySelector('.estimation_result .result_estimate').innerHTML = `${first_half}, You should buy the rest ${first_result} from from ${ele.parentNode.classList[0]} ${ele.parentNode.classList[1]} and`;
+                                    document.querySelector('.total_price').innerHTML = ` Total cost is $${total_price}`;
                                 }
                             }
                         }   
@@ -265,7 +277,9 @@ window.onload = function(){
                     }
                     else if(input_result.value =='' || selection_value.value ==''){
                         first_result = 0;
+                        total_price = 0;
                         document.querySelector('.estimation_result .result_estimate').innerHTML = '';
+                        document.querySelector('.total_price').innerHTML = '';
                     }                
                 })
             })
